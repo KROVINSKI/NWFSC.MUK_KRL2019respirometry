@@ -1,0 +1,88 @@
+---
+title: "Respirometry Krill Summer 2019"
+output:
+ html_document:
+    df_print: paged
+    code_folding: hide
+    toc: TRUE
+    toc_depth: 4
+    toc_float: true
+    theme: journal
+    highlight: zenburn
+    smart: false
+
+---
+
+```{r knitr::opts_chunk$set(warning = FALSE, message = FALSE)}
+
+```
+
+
+
+```{r 0.0 Libraries , echo=FALSE, results=FALSE, message=FALSE, warning=FALSE}
+#*********************************
+##Libraries
+#********************************* 
+library("stringr")
+library("plyr")
+library("nlme")
+library("tidyr")
+library("purrr")
+#for graphing
+library("ggplot2")
+library("stringr")
+library("nlme")
+library("RColorBrewer")
+#statistical analysis
+library("gdata")
+library("rsq")
+library("doBy")
+library(gridExtra)
+library(kableExtra)
+```
+
+
+
+
+# 1. Setting the Working Directory
+```{r 1.0 Setting Working Directory, ECHO= FALSE, message=FALSE, warning=FALSE}
+#*********************************
+## 1.) Setting Working Directory
+#*********************************
+knitr::opts_chunk$set(echo = TRUE)
+
+knitr::opts_knit$set(root.dir =
+                       "/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/02. Respirometry")
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+```
+
+
+
+
+# 2. Creating the Out-file
+```{r 2.) Creating the Out-file}
+#*********************************
+## 2.) Creating the Out-file
+#*********************************
+
+#create a temperaute blank file for everything to go into
+out.file <- ""
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

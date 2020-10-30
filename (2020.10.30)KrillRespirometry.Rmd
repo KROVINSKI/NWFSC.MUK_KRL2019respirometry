@@ -73,9 +73,213 @@ out.file <- ""
 ```
 
 
+# 3. Creating the Dataframe dRESP, creating the loop
+```{r 3.) Creating the Dataframe dRESP, creating the loop}
+#*********************************
+## 3.) Creating the Dataframe dRESP, creating the loop
+#*********************************
+
+
+#get all the files in the defined working directory that are in csv format
+file.names <- dir(getwd(), pattern =".csv")
+#print(file.names)
+MasterSheetR = NULL
+
+dRESP <- read.table(file.names[1], sep = ";", row.names = NULL, skip = 1, 
+                fill = TRUE, 
+                header = TRUE, 
+                fileEncoding="latin1", 
+                stringsAsFactors = FALSE)
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 
 
+#make a for loop (see data analysis 10 jun for comments on this code)
+for(i in 1:length(file.names)){
+  dRESP <- read.table(file.names[i], 
+                  sep = ";", 
+                  row.names = NULL, 
+                  skip = 1, 
+                  fill = TRUE, 
+                  header = TRUE, 
+                  fileEncoding="latin1", 
+                  stringsAsFactors = FALSE)
+  
+  cnames <- colnames(dRESP)
+  cnames <- cnames[2:length(cnames)]
+  colnames(dRESP)<- cnames
+  dRESP[,53] = NULL
+  
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+  
+  
+dRESP <- subset(dRESP, SensorName != "")
+  #dRESP <- subset(d, d$delta_t > 10)
+dRESP$SensorName <- str_trim(dRESP$SensorName, side = c("both"))
+dRESP$SensorName <- factor(dRESP$SensorName)
+  
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+  
+  
+  
+#  levels(d$SensorName) <- c(1:10)
+  dRESP$TrialID <- substr(file.names[i], 0, nchar(file.names[1]) -4) 
+#for some reason only takes first 10 characters instead of chopping off last 4. caused 7JUL - 07JUL problem
+#d$Temp == 12 & d$Value >225 #what do i do with these lines
+#d$Temp == 16 & d$Value > 206
+  MasterSheetR <- rbind(MasterSheetR, dRESP)
+}
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
+write.table(MasterSheetR, file = "file", sep=";", 
+            row.names = TRUE)
+#MasterSheetR <- as.data.frame(MasterSheetR)
+#View(MasterSheetR)
+#mode(MasterSheetR$TrialID)
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
+levels(as.factor(MasterSheetR$TrialID))
+#mode(MasterSheetR) 
+levels(factor(dRESP$SensorName))
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
+#Make vale numeric, get rid of dashes, fix time and make a basic plot, just to get an overall view of data
+dRESP$Value<-as.numeric(dRESP$Value)
+dRESP <-subset(dRESP, Value != "---")
+dRESP$Time <- as.POSIXct(dRESP$Time, format="%H:%M:%S")
+ggplot(dRESP, aes(x = Time, y = Value, colour = SensorName)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") + 
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  theme_bw()
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+```
+
+
+
+# 4. Analysis, Respirometry - Creating the Inital Slopes
+```{r 4.) Analysis, Respirometry - Creating the Inital Slopes}
+#*********************************
+## 4.) Analysis, Respirometry - Creating the Slope  
+#*********************************
+
+
+#call up treatment reference doc, make columns into factors so that you can merge them. 
+dref <- read.csv("/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/02. Respirometry/TreatSize/KRL_SMR_19_TreatSize_v2.csv")
+View(dref)
+dref$TrialID <- dref$FileName
+dref$SensorName <- as.factor(dref$SensorName)
+dref$MOATS <- as.factor(dref$MOATS)
+dref$KrillID <- paste(dref$TrialID, "_", dref$SensorName, sep="")
+dref$KrillID
+#View(dref)
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
+#make columns in both mastersheetr and dref that are KrillID
+MasterSheetR$KrillID
+MasterSheetR$KrillID <- paste(MasterSheetR$TrialID, MasterSheetR$SensorName, sep="_")
+View(MasterSheetR)
+dref$KrillID <- paste(dref$TrialID, dref$SensorName, sep="_")
+dref$KrillID <- str_trim(dref$KrillID, side = c("both"))
+dref$KrillID
+#View(dref)
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
+#merge dataframe dref and dataframe MasterSheetR into one big dataframe called dtotal
+dtotal <- merge(MasterSheetR, dref, by="KrillID") 
+
+dtotal$Value <- as.numeric(dtotal$Value)
+#convert from O2 concentration to O2 quantity per vial 
+#dtotal$Value is the concentration in the vial in umol/L
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
+#need to measure vials
+vialVol <- 28.06 #ml
+dtotal$oxygen <- vialVol * dtotal$Value   #nmol/vial; conversion for L to ml and umol to nmol cancels
+View(dtotal)
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
+# #get slopes and r^2 values from dtotal - just adjusted code from data analysis to fit into these df's
+# info <- lmList(oxygen ~ delta_t|KrillID, dtotal, na.action=na.omit)
+# print(info)
+# slopes <- coef(info)[2]
+# #print(slopes)
+# dslopes <- data.matrix(slopes)
+# #View(dref)
+# mode(dslopes[,1])
+# dslopes <- as.data.frame(dslopes)
+# dslopes$slope <- dslopes$delta_t
+# dslopes$delta_t <- NULL
+# #View(dslopes)
+
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
+dtotal$Krill_Trial <- paste(dtotal$KrillID, dtotal$TrialID.x, sep = "_")
+
+#slope funcion of 2 vectors
+slope <- function(y,x){
+  return(lm(y~x, na.action = na.omit)$coefficients[2])
+}
+
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
+#using newly created slope function to give it what columns to use 
+cSlopes <- by(dtotal, dtotal$Krill_Trial, function(x){ slope(x$oxygen, x$delta_t)})
+#creating a data frame instead of a list 
+ds <- as.data.frame(sapply(cSlopes, I))
+#having row names be a variable in a column to be able to pull it out for later merging 
+ds$krilltrial<- row.names(ds)
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
+#add column to dslopes thats KrillID
+#View(dref)
+ds$KrillID <- row.names(ds)
+#View(dslopes)
+dtotal2 <- merge(dref, ds, by = "KrillID")
+View(dtotal2)
+
+#now for R^2!!
+Rsq <- sapply(info,function(x) summary(x)$r.squared)
+t(Rsq) #transposes rows and columns
+Rsq <- data.matrix(Rsq)
+#View(Rsq)
+dtotal2 <- cbind(dtotal2, Rsq)
+View(dtotal2)
+
+```
 
 
 

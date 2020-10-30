@@ -14,6 +14,10 @@ output:
 ---
 
 ```{r knitr::opts_chunk$set(warning = FALSE, message = FALSE)}
+# Version Checks
+R.version
+(rmarkdown::pandoc_version())
+
 
 ```
 
@@ -37,7 +41,10 @@ library("RColorBrewer")
 library("gdata")
 library("rsq")
 library("doBy")
+#Rnotebook relate 
 library(gridExtra)
+library(pandocfilters)
+library(tinytex)
 library(kableExtra)
 ```
 
@@ -169,7 +176,7 @@ ggplot(dRESP, aes(x = Time, y = Value, colour = SensorName)) +
 
 
 # 4. Analysis, Respirometry - Creating the Inital Slopes
-```{r 4.) Analysis, Respirometry - Creating the Inital Slopes}
+```{r 4.) Analysis, Respirometry: Creating the Inital Slopes}
 #*********************************
 ## 4.) Analysis, Respirometry - Creating the Slope  
 #*********************************
@@ -284,7 +291,7 @@ ggplot(dRESP, aes(x = Time, y = Value, colour = SensorName)) +
 
 
 # 5. Analysis, Respirometry - Correcting the Slope 
-```{r 5.) Analysis, Respirometry - Correcting the Slope }
+```{r 5.) Analysis, Respirometry: Correcting the Slope }
 
 # #*********************************
 # ## 5.) Analysis, Respirometry - Correcting the Slope  
@@ -388,7 +395,7 @@ ggplot(dRESP, aes(x = Time, y = Value, colour = SensorName)) +
 # #### 5.a) Analysis, Respirometry - Correcting the Slope
 # ```{r 5.a) Analysis, Respirometry - datac table}
 # 
-# kable(datac, digits = 2)
+
 
 ```
 

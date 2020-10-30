@@ -91,8 +91,11 @@ dRESP <- read.table(file.names[1], sep = ";", row.names = NULL, skip = 1,
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
+## Kate Comments
+## Loop below cycles thorough the fold to find desired file types based on extension
+## why do we only select 53 columns?
 
-
+#Paul Comments
 #make a for loop (see data analysis 10 jun for comments on this code)
 for(i in 1:length(file.names)){
   dRESP <- read.table(file.names[i], 

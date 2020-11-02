@@ -154,6 +154,11 @@ write.table(MasterSheetR, file = "file", sep=";",
 levels(as.factor(MasterSheetR$TrialID))
 #mode(MasterSheetR) 
 levels(factor(dRESP$SensorName))
+dim(dRESP)
+
+
+
+
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 

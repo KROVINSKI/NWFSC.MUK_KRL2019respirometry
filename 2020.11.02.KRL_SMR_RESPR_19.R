@@ -18,20 +18,24 @@ R.version
 #*********************************
 ##Libraries
 #********************************* 
-library("stringr")
-library("plyr")
-library("nlme")
-library("tidyr")
-library("purrr")
+library(stringr)
+library(plyr)
+library(nlme)
+library(tidyr)
+library(purrr)
+library(wql)
 #for graphing
-library("ggplot2")
-library("stringr")
-library("nlme")
-library("RColorBrewer")
+library(ggplot2)
+library(stringr)
+library(nlme)
+library(RColorBrewer)
 #statistical analysis
-library("gdata")
-library("rsq")
-library("doBy")
+library(gdata)
+library(rsq)
+library(doBy)
+#Rnotebooks 
+library(gridExtra)
+library(kableExtra)
 
 
 #*********************************
@@ -157,14 +161,11 @@ levels(factor(dRESP$SensorName))
 dim(dRESP)
 
 
-
-
-
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 
-
-#Make vale numeric, get rid of dashes, fix time and make a basic plot, just to get an overall view of data
+#value = the mg/L dissolved oxygen
+#Make value numeric, get rid of dashes, fix time and make a basic plot, just to get an overall view of data
 
 
 dRESP$Value<-as.numeric(dRESP$Value)
@@ -177,6 +178,54 @@ ggplot(dRESP, aes(x = Time, y = Value, colour = SensorName)) +
   theme_bw()
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+# updates to the mg/L
+# saturated mg/L DO at observed temperature and assumed salinity
+# the oxySol() function is form the wql package
+
+# !!!!!!!!!!!!!!!!!!!!!!
+
+dRESP$percentDOassumpt <- ""
+dRESP$percentDOassumpt <- as.numeric(dRESP$percentDOassumpt)
+
+dRESP$assumedSatDOmg <- ""
+dRESP$assumedSatDOmg <- as.numeric(dRESP$assumedSatDOmg)
+
+# the percent DO
+dRESP$percentDO <- "" 
+dRESP$percentDO <- as.numeric(dRESP$percentDO)
+
+
+# Observed / Measured Salinity readings informed answers
+dRESP$obseveredSatDOmg <- "" 
+dRESP$obseveredSatDOmg <- as.numeric(dRESP$obseveredSatDOmg)
+
+
+dRESP$actualDOmg <- ""
+dRESP$actualDOmg <- as.numeric(dRESP$actualDOmg)
+
+# Review of Values
+# dRESP$percentDOassumpt
+# dRESP$assumedSatDOmg
+# dRESP$percentDO
+# dRESP$obseveredSatDOmg
+# dRESP$actualDOmg
+
+# Salinity measured ahead of trials 
+salinityconstant <- 30.3
+
+dRESP$observedSatDomg <- oxySol(dRESP$Temp, 
+                               dRESP$Salinity)
+
+dRESP$percentDOassumpt <- ""
+dRESP$percentDOassumpt <- as.numeric(dRESP$percentDOassumpt)
+dRESP$percentDOassumpt <- dRESP$Value / dRESP$assumedSatDOmg
+
+
+
+
+
 
 
 

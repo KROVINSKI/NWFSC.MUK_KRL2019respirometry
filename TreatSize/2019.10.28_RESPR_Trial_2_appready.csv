@@ -1,0 +1,20 @@
+Sequence ,FileName,SensorName,MOATS,Treatment,LoadingLocation,GlassVialNumber,Species,TelsonLength,Size
+1,2019.10.28_RESPR_T2,KriLR220             ,12,CUR,A1,1,Euphausia pacifica,3.19,0.0225
+2,2019.10.28_RESPR_T2,KriLR221             ,4,AMB,A3,2,Euphausia pacifica,3.1,0.0465
+3,2019.10.28_RESPR_T2,KriLR222             ,4,AMB,A5,3,Euphausia pacifica,3.17,0.0345
+4,2019.10.28_RESPR_T2,KriLR223             ,2,CHG,B2,4,Euphausia pacifica,3.08,0.0215
+5,2019.10.28_RESPR_T2,KriLR224             ,blank,NA,B4,5,Euphausia pacifica,n/a,n/a
+6,2019.10.28_RESPR_T2,KriLR225             ,4,AMB,C1,6,Euphausia pacifica,2.86,0.0124
+7,2019.10.28_RESPR_T2,KriLR226             ,12,CUR,C5,7,Euphausia pacifica,2.43,0.0227
+8,2019.10.28_RESPR_T2,KriLR227             ,2,CHG,C5,8,Euphausia pacifica,3.28,0.0373
+9,2019.10.28_RESPR_T2,KriLR228             ,4,AMB,E1,9,Euphausia pacifica,2.04,0.0269
+10,2019.10.28_RESPR_T2,KriLR229             ,2,CHG,E5,10,Euphausia pacifica,2.92,0.0308
+11,2019.10.28_RESPR_T2,KriLR230             ,blank,NA,G1,11,Euphausia pacifica,n/a,n/a
+12,2019.10.28_RESPR_T2,KriLR231             ,4,AMB,G3,12,Euphausia pacifica,2.8,0.027
+13,2019.10.28_RESPR_T2,KriLR232             ,12,CUR,G5,13,Euphausia pacifica,3.32,0.0465
+14,2019.10.28_RESPR_T2,KriLR233             ,2,CHG,H2,14,Euphausia pacifica,3.36,0.0416
+15,2019.10.28_RESPR_T2,KriLR234             ,12,CUR,I1,15,Euphausia pacifica,2.65,0.0213
+16,2019.10.28_RESPR_T2,KriLR235             ,2,CHG,I3,16,Euphausia pacifica,3.12,0.0429
+17,2019.10.28_RESPR_T2,KriLR236             ,4,AMB,I5,17,Euphausia pacifica,2.65,0.0298
+18,2019.10.28_RESPR_T2,KriLR237             ,4,AMB,J2,18,Euphausia pacifica,2.96,0.0466
+19,2019.10.28_RESPR_T2,KriLR238             ,4,AMB,J4,19,Euphausia pacifica,2.88,0.0338

@@ -81,16 +81,19 @@ out.file <- ""
 ## 3.) Creating the Dataframe, creating the loop " dRESP
 #*********************************
 
-
+## Method 1 - 1 file for the four trials
 #get all the files in the defined working directory that are in csv format
+# dRESP <- read.csv(file = "KRILL_Resp_alltrials.csv", stringsAsFactors = FALSE)
+
+## Method 2 - collecting the 4 files 
 file.names <- dir(getwd(), pattern =".csv")
 #print(file.names)
 MasterSheetR = NULL
-
+# 
 dRESP <- read.table(file.names[1], sep = ";", row.names = NULL, skip = 1, 
-                fill = TRUE, 
-                header = TRUE, 
-                fileEncoding="latin1", 
+                fill = TRUE,
+                header = TRUE,
+                fileEncoding="latin1",
                 stringsAsFactors = FALSE)
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |

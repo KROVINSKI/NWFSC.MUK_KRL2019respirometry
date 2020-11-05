@@ -379,7 +379,6 @@ dtotal3$blankmeanslope <- as.numeric(as.character(dtotal3$blankmeanslope))
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 
-
 dtotal3$slope <- as.numeric(dtotal3$slope)
 
 #20 july: the blanks themselves are an issue because they're getting the average of themselves and the other blanks taken away from them. what do? 

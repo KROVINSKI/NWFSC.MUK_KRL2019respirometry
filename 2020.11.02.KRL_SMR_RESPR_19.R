@@ -189,48 +189,6 @@ ggplot(dRESP, aes(x = Time, y = Value, colour = SensorName)) +
 
 # !!!!!!!!!!!!!!!!!!!!!!
 
-dRESP$percentDOassumpt <- ""
-dRESP$percentDOassumpt <- as.numeric(dRESP$percentDOassumpt)
-
-dRESP$assumedSatDOmg <- ""
-dRESP$assumedSatDOmg <- as.numeric(dRESP$assumedSatDOmg)
-
-# the percent DO
-dRESP$percentDO <- "" 
-dRESP$percentDO <- as.numeric(dRESP$percentDO)
-
-
-# Observed / Measured Salinity readings informed answers
-dRESP$obseveredSatDOmg <- "" 
-dRESP$obseveredSatDOmg <- as.numeric(dRESP$obseveredSatDOmg)
-
-
-dRESP$actualDOmg <- ""
-dRESP$actualDOmg <- as.numeric(dRESP$actualDOmg)
-
-# Review of Values
-# dRESP$percentDOassumpt
-# dRESP$assumedSatDOmg
-# dRESP$percentDO
-# dRESP$obseveredSatDOmg
-# dRESP$actualDOmg
-
-# Salinity measured ahead of trials 
-salinityconstant <- 30.3
-
-dRESP$observedSatDomg <- oxySol(dRESP$Temp, 
-                               dRESP$Salinity)
-
-dRESP$percentDOassumpt <- ""
-dRESP$percentDOassumpt <- as.numeric(dRESP$percentDOassumpt)
-dRESP$percentDOassumpt <- dRESP$Value / dRESP$assumedSatDOmg
-
-
-
-# Identifying trial to correct temperature
-
-
-
 
 
 #*********************************

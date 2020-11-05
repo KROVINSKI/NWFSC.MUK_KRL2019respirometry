@@ -404,6 +404,8 @@ blankmeanslope <- cbind(blankmeanslope, levels(dtotal2$TrialID))
 #View(blankmeanslope) #good so far!! 20 july
 blankmeanslope[,1] <- as.numeric(blankmeanslope[,1]) #make sure it stays numeric
 
+
+
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 

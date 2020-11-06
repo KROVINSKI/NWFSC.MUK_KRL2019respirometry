@@ -17,13 +17,9 @@ output:
 
 Hello World
 
-## Author: OA Lab, NWFSC
-## Title: Respirometry Trails for Summer Krill 2019
-## Date: October-November 2020
-
-# R script below will subselect and plot temperature data for MOATs
-# Overall goal is to determine if MOATs (per treatment) are true replicates
-
+Author: OA Lab, NWFSC
+Title: Respirometry Trails for Summer Krill 2019
+Date: November 2020
 
 
 placeholder

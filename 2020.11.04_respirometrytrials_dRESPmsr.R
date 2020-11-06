@@ -26,6 +26,7 @@ library(tidyr)
 library(purrr)
 library(wql)
 library(lubridate)
+library(arsenal)
 #for graphing
 library(ggplot2)
 library(stringr)
@@ -89,15 +90,6 @@ dim(dRESP)
 
 write.csv(dRESP, file = "2020.11.04_presenseSENSORONLY.alltrials.data.csv", row.names = FALSE)
 
-
-# #creating new variables to make the later join possible
-# dRESP$MOATS <- ""
-# dRESP$Treatment <- ""
-# dRESP$LoadingLocation <- ""
-# dRESP$GlassVialNumber <- ""
-# dRESP$Species <- ""
-# dRESP$TelsonLength <- ""
-# dRESP$Size <- ""
 
 
 # dRESPanimal represents just the animal, vial, MOATs, etc.  
@@ -348,37 +340,98 @@ slope <- function(y,x){
 dRESPmsr$delta_t <- as.numeric(dRESPmsr$delta_t)
 
 cSlopes <- by(dRESPmsr, dRESPmsr$KrillID, function(x){ slope(x$oxygen, x$delta_t)})
-  
+
+
+#creating a data frame instead of a list 
+ds <- as.data.frame(sapply(cSlopes, I))
+#having row names be a variable in a column to be able to pull it out for later merging 
+ds$TrialID<- row.names(ds)
+
   
   
 #*********************************
 ## 11.) Creating the ds dataframe
 #*********************************
 
-## Kate Comment why do I need another dataframe?
-## Why do I need ds?
-
-#having row names be a variable in a column to be able to pull it out for later merging 
-ds$krilltrial<- row.names(ds)
-
-#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
-
-
 
 #add column to dslopes thats KrillID
 #View(dref)
 ds$KrillID <- row.names(ds)
 #View(dslopes)
-dtotal2 <- merge(dref, ds, by = "KrillID")
-View(dtotal2)
+dtotal <- merge(dRESPmsr, ds, by = "KrillID")
+View(dtotal)
+
+
+# #get slopes and r^2 values from dtotal - just adjusted code from data analysis to fit into these df's
+dtotal$KrillID <- factor(dtotal$KrillID)
+nlevels(dtotal$KrillID)
+
+## why do we have a different number of observations
+## using the comparedf function from the arsenal package
+
+comparedf(ds, dtotal)
+summary(comparedf(ds, dtotal))
+
+
+
+dtotal[is.na(dtotal$delta_t),]
+unique(dtotal$KrillID)
+
+
+
+
+
+
+
+#how best to run the lmlist over 
+# group and then run a function tidyverse 
+# group by krill ID and then run the function 
+
+info <- lmList(oxygen ~ delta_t|KrillID, dtotal,na.action=na.omit)
+
+
+dtotalGRP <- dtotal %>% group_by(KrillID)
+
+info <- lmList(oxygen ~ delta_t|KrillID, dtotal,na.action=na.omit)
+
+
+summary(lm(oxygen ~ delta_t, data= dtotal[dtotal$KrillID=="Trial04_KRLr4_59",]))$r.squared
+
+lm(oxygen ~ delta_t, data= dtotal[dtotal$KrillID=="Trial04_KRLr4_68",])
+
+lm(oxygen ~ delta_t, data= dtotal[dtotal$KrillID=="Trial04_KRLr4_69",])
+
+
+
+
+dtotal[is.na(dtotal$delta_t),]
+unique(dtotal$KrillID)
+            
+names(info)
+
+view(dtotal[!dtotal$KrillID %in% names(info), ])
+
+   
+print(info)
+
+# slopes <- coef(info)[2]
+# #print(slopes)
+# dslopes <- data.matrix(slopes)
+# #View(dref)
+# mode(dslopes[,1])
+# dslopes <- as.data.frame(dslopes)
+# dslopes$slope <- dslopes$delta_t
+# dslopes$delta_t <- NULL
+# #View(dslopes)
+
 
 #now for R^2!!
 Rsq <- sapply(info,function(x) summary(x)$r.squared)
 t(Rsq) #transposes rows and columns
 Rsq <- data.matrix(Rsq)
 #View(Rsq)
-dtotal2 <- cbind(dtotal2, Rsq)
-View(dtotal2)
+dtotal <- cbind(ds, Rsq)
+View(dtotal)
 
 
 

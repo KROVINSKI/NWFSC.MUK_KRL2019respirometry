@@ -244,17 +244,17 @@ View(dtotal)
 
 
 # #get slopes and r^2 values from dtotal - just adjusted code from data analysis to fit into these df's
-# info <- lmList(oxygen ~ delta_t|KrillID, dtotal, na.action=na.omit)
-# print(info)
-# slopes <- coef(info)[2]
-# #print(slopes)
-# dslopes <- data.matrix(slopes)
-# #View(dref)
-# mode(dslopes[,1])
-# dslopes <- as.data.frame(dslopes)
-# dslopes$slope <- dslopes$delta_t
-# dslopes$delta_t <- NULL
-# #View(dslopes)
+info <- lmList(oxygen ~ delta_t|KrillID, dtotal, na.action=na.omit)
+print(info)
+slopes <- coef(info)[2]
+#print(slopes)
+dslopes <- data.matrix(slopes)
+#View(dref)
+mode(dslopes[,1])
+dslopes <- as.data.frame(dslopes)
+dslopes$slope <- dslopes$delta_t
+dslopes$delta_t <- NULL
+#View(dslopes)
 
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |

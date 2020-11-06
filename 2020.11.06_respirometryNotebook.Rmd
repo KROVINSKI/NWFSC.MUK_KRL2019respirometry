@@ -64,24 +64,7 @@ library(kableExtra)
 
 
 placeholder 
-
-#*********************************
-## Outline Current (2020.10.30)
-#*********************************
-
-## 1.) Working Directory
-## 2.) Creating the Out-files
-## 3.) Reformatting directory to correct format 
-## 4.) Analysis 
-
-## 5.) Placeholder 
-## 6.) Placeholder
-## 7.) Placeholder
-## 8.) Placeholder
-## 9.) Placeholder
-## 10.) Placeholder
-
-
+# 1.) Setting Working Directory
 ```{r 1.) Setting Working Directory, echo=FALSE, results=FALSE, message=FALSE, warning=FALSE}
 #*********************************
 ## 1.) Setting Working Directory
@@ -94,11 +77,11 @@ setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_KRL2019respirometry")
 
 
 placeholder
-
-```{r 3.) Creating the Dataframe, dRESP, echo=FALSE, results=FALSE, message=FALSE, warning=FALSE}
+# 2.) Creating the Dataframe
+```{r 2.) Creating the Dataframe, dRESP, echo=FALSE, results=FALSE, message=FALSE, warning=FALSE}
 
 #*********************************
-## 3.) Creating the Dataframe, dRESP
+## 2.) Creating the intial Dataframe, dRESP
 #*********************************
 
 ## Method 1 - 1 file for the four trials
@@ -125,9 +108,9 @@ write.csv(dRESPmsr, file = "2020.11.04_respirometrymeasurements.csv", row.names 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 
-dRESP$MOATS <- factor(dRESP$MOATS)
+# dRESP$MOATS <- factor(dRESP$MOATS)
 # Checking the names of the different levels
-levels(dRESP$MOATS)
+# levels(dRESP$MOATS)
 
 
 ```
@@ -136,9 +119,341 @@ levels(dRESP$MOATS)
 
 
 placeholder
+# 3.) Creating dateTime objects 
+```{r 3.) Creating dateTime objects }
+
+#*********************************
+## 3.) Creating dateTime objects  
+#*********************************
+
+# 4.0 establish the date time object of the CSV |
+# dRESPmsr$Date <- as.POSIXct(dRESPmsr$Date, format=("%dd-%mm-%yy))
+# # dRESPmsr$Date <- as.POSIXct(dRESPmsr$Date, format=("%d-%m-%y))
+# # dRESPmsr$Date <- as.POSIXct(dRESPmsr$Date, format=("%d-%m-%y))
+
+#ReferenceTime <- as.POSIXct("2019-09-20 23:59:00")
+class(ReferenceTime)
+
+dRESPmsr$dateTime <- ""
+dRESPmsr$dateTime <- as.POSIXct(paste(dRESPmsr$Date,
+                                      dRESPmsr$Time), "%d-%B-%y %H:%M:%S", tz="UTC")
+
+# QA check
+dim(dRESPmsr)
+
+dRESPmsr$Time <- as.POSIXct(dRESPmsr$dateTime, format="%H:%M:%S")
+
+
+```
 
 
 
+
+# 4.) Cleaning up observations
+```{r 4.) Cleaning up observations }
+#*********************************
+## 4.) Cleaning up observations  
+#********************************
+
+#Removing items with faulty sensor names
+dRESPmsr <- subset(dRESPmsr, SensorName != "")
+
+dRESPmsr$SensorName <- str_trim(dRESPmsr$SensorName, side = c("both"))
+dRESPmsr$SensorName <- factor(dRESPmsr$SensorName)
+dim(dRESPmsr)
+
+dRESPmsr <- subset(dRESPmsr, Value != "---")
+
+
+```
+
+placeholder
+## 4.a) Plot to demonstrate the SensorName
+```{r 4.a) Plot to demonstrate the SensorName }
+#*********************************
+## 4.a) Plot to demonstrate the SensorName 
+#*********************************
+
+ggplot(dRESPmsr, aes(x = Time, y = Value, colour = SensorName)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") + 
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  theme_bw()
+
+```
+
+placeholder
+
+
+placeholder
+
+#5.) Creating Trial ID & Krill ID
+```{r 5.) Creating Trial ID & Krill ID}
+#*********************************
+## 5.) Creating a Krill ID with Trial in name    
+#*********************************
+
+## First Trial began at 2019-10-28 14:25:01
+## First Trial ended at 2019-10-28 16:37:29
+
+## Second Trial began at 2019-10-28 18:55:21
+## Second Trial ended at 2019-10-28 21:16:45
+
+## Third Trial began at 2019-10-29 14:06:21
+## Third Trial ended at 2019-10-29 16:18:36
+
+## Fourth Trial began at 2019-10-29 17:20:21
+## Fourth Trial ended at 2019-10-29 19:32:01
+
+
+dRESPmsr$TrialID <- ""
+dRESPmsr <- dRESPmsr %>% mutate(TrialID=case_when(
+  
+## First Trial began at 2019-10-28 14:25:01
+## First Trial ended at 2019-10-28 16:37:29
+  
+  ((Time >= as.POSIXct("2019-10-28 14:25:00", tz = "UTC")) 
+   & (Time < as.POSIXct("2019-10-28 16:37:30", tz = "UTC"))) ~ "Trial01",
+
+  
+## Second Trial began at 2019-10-28 18:55:21
+## Second Trial ended at 2019-10-28 21:16:45  
+  
+  ((Time >= as.POSIXct("2019-10-28 18:55:20", tz = "UTC")) 
+   & (Time <= as.POSIXct("2019-10-28 21:16:50", tz = "UTC"))) ~ "Trial02",
+
+
+## Third Trial began at 2019-10-29 14:06:21
+## Third Trial ended at 2019-10-29 16:18:36
+
+
+  ((Time >= as.POSIXct("2019-10-29 14:06:18", tz = "UTC")) 
+   & (Time <= as.POSIXct("2019-10-29 16:18:40", tz = "UTC"))) ~ "Trial03",
+
+## Fourth Trial began at 2019-10-29 17:20:21
+## Fourth Trial ended at 2019-10-29 19:32:01
+
+  
+  ((Time >= as.POSIXct("2019-10-29 17:20:18", tz = "UTC")) 
+   & (Time <= as.POSIXct("2019-10-29 19:40:01", tz = "UTC"))) ~ "Trial04",
+
+  TRUE ~"other"
+)) 
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+## new value 
+## dRESPmsr$KrillID
+
+dRESPmsr$KrillID <- ""
+
+dRESPmsr$KrillID <- paste(dRESPmsr$TrialID, "_", dRESPmsr$SensorName, sep="")
+#View(dRESPmsr)
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+```
+
+
+placeholder
+
+# 6.) DO Corrections
+```{r 6.) DO trial 3 correction applied to all rounds}
+#*********************************
+## 6.) DO trial 3 correction applied to all rounds   
+#*********************************
+
+# New values to correct the DO values for the temperature in Trial 3 in the dataframe dRESPmsr
+
+dRESPmsr$percentDOassumpt <- ""
+dRESPmsr$assumedSatDOmg <- ""
+dRESPmsr$percentDO <- ""
+dRESPmsr$obseveredSatDOmg <- ""
+dRESPmsr$actualDOmg <- ""
+
+dRESPmsr$percentDOassumpt <- as.numeric(dRESPmsr$percentDOassumpt)
+dRESPmsr$assumedSatDOmg <- as.numeric(dRESPmsr$assumedSatDOmg)
+dRESPmsr$percentDO <- as.numeric(dRESPmsr$percentDO)
+dRESPmsr$obseveredSatDOmg <- as.numeric(dRESPmsr$obseveredSatDOmg)
+dRESPmsr$actualDOmg <- as.numeric(dRESPmsr$actualDOmg)
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+#Correct Temperature
+dRESPmsr$CorTemp <- 11
+
+#Salinity Constant
+dRESPmsr$SalinityConstant <- 30.3
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+# Numeric Corrections to DO value
+dRESPmsr$Value <- as.numeric(dRESPmsr$Value)
+
+dRESPmsr$assumedSatDOmg <- oxySol(dRESPmsr$CorTemp, 
+                                  dRESPmsr$SalinityConstant)
+
+dRESPmsr$percentDOassumpt <- dRESPmsr$Value / dRESPmsr$assumedSatDOmg
+
+dRESPmsr$obseveredSatDOmg <- oxySol(dRESPmsr$CorTemp, dRESPmsr$SalinityConstant)
+
+dRESPmsr$percentDO <- dRESPmsr$Value / dRESPmsr$assumedSatDOmg
+
+dRESPmsr$actualDOmg <- dRESPmsr$percentDO * dRESPmsr$obseveredSatDOmg
+
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+```
+
+
+placeholder
+# 6.a) DO table & DO correction Plot Check
+```{r 6.a) DO table & DO correction Plot Check  }
+#*********************************
+## 6.a) DO table & DO correction Plot Check  
+#*********************************
+
+write.table(dRESPmsr, file = "2020.11.06.dRESPmeasurements", sep=";", 
+            row.names = TRUE)
+
+dRESPmsr <-subset(dRESPmsr, actualDOmg != "---")
+dRESPmsr$Time <- as.POSIXct(dRESPmsr$Time, format="%H:%M:%S")
+ggplot(dRESPmsr, aes(x = Time, y = actualDOmg, colour = SensorName)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") + 
+  facet_wrap(~TrialID) +
+  ylim(12)
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  theme_bw()
+
+```
+
+
+
+placeholder
+# 7.) Analysis, Respirometry - Creating the Slope Function 
+```{r 7.) Analysis, Respirometry - Creating the Slope Function}
+#*********************************
+## 7.) Analysis, Respirometry - Creating the Slope Function  
+#*********************************  
+  
+vialVol <- 28.06 #ml
+dRESPmsr$oxygen <- vialVol * dRESPmsr$actualDOmg   
+#nmol/vial; conversion for L to ml and umol to nmol cancels
+
+#slope funcion of 2 vectors
+slope <- function(y,x){
+  return(lm(y~x, na.action = na.omit)$coefficients[2])
+}
+  
+dRESPmsr$delta_t <- as.numeric(dRESPmsr$delta_t)
+cSlopes <- by(dRESPmsr, dRESPmsr$KrillID, function(x){ slope(x$oxygen, x$delta_t)})
+
+
+```
+
+
+
+placeholder
+# 8.) Creating the ds dataframe
+```{r 8.) Creating the ds dataframe}
+#*********************************
+## 11.) Creating the ds dataframe
+#*********************************
+
+#creating a data frame instead of a list 
+ds <- as.data.frame(sapply(cSlopes, I))
+#having row names be a variable in a column to be able to pull it out for later merging 
+ds$TrialID<- row.names(ds)
+
+dim(ds)
+
+#add column to dslopes thats KrillID
+#View(dref)
+ds$KrillID <- row.names(ds)
+#View(dslopes)
+dtotal <- merge(dRESPmsr, ds, by = "KrillID")
+View(dtotal)
+
+
+# #get slopes and r^2 values from dtotal - just adjusted code from data analysis to fit into these df's
+dtotal$KrillID <- factor(dtotal$KrillID)
+nlevels(dtotal$KrillID)
+
+## why do we have a different number of observations
+## using the comparedf function from the arsenal package
+
+comparedf(ds, dtotal)
+summary(comparedf(ds, dtotal))
+
+
+
+dtotal[is.na(dtotal$delta_t),]
+unique(dtotal$KrillID)
+
+
+
+
+
+
+
+#how best to run the lmlist over 
+# group and then run a function tidyverse 
+# group by krill ID and then run the function 
+
+info <- lmList(oxygen ~ delta_t|KrillID, dtotal,na.action=na.omit)
+
+
+dtotalGRP <- dtotal %>% group_by(KrillID)
+
+info <- lmList(oxygen ~ delta_t|KrillID, dtotal,na.action=na.omit)
+
+
+summary(lm(oxygen ~ delta_t, data= dtotal[dtotal$KrillID=="Trial04_KRLr4_59",]))$r.squared
+
+lm(oxygen ~ delta_t, data= dtotal[dtotal$KrillID=="Trial04_KRLr4_68",])
+
+lm(oxygen ~ delta_t, data= dtotal[dtotal$KrillID=="Trial04_KRLr4_69",])
+
+
+
+
+dtotal[is.na(dtotal$delta_t),]
+unique(dtotal$KrillID)
+            
+names(info)
+
+view(dtotal[!dtotal$KrillID %in% names(info), ])
+
+   
+print(info)
+
+# slopes <- coef(info)[2]
+# #print(slopes)
+# dslopes <- data.matrix(slopes)
+# #View(dref)
+# mode(dslopes[,1])
+# dslopes <- as.data.frame(dslopes)
+# dslopes$slope <- dslopes$delta_t
+# dslopes$delta_t <- NULL
+# #View(dslopes)
+
+
+#now for R^2!!
+Rsq <- sapply(info,function(x) summary(x)$r.squared)
+t(Rsq) #transposes rows and columns
+Rsq <- data.matrix(Rsq)
+#View(Rsq)
+dtotal <- cbind(ds, Rsq)
+View(dtotal)
+
+
+
+
+
+
+
+
+```
 
 
 placeholder
@@ -146,15 +461,7 @@ placeholder
 
 
 
-
 placeholder
-
-
-
-
-
-placeholder
-
 
 
 

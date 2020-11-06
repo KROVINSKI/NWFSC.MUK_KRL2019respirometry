@@ -26,9 +26,9 @@ Hello World
 
 
 
+placeholder
 
-
-```{r}
+```{r 0.1 Version Check , echo=FALSE, results=FALSE, message=FALSE, warning=FALSE}
 #*********************************
 ## Version Check
 #********************************* 
@@ -36,11 +36,9 @@ R.version
 
 ```
 
-
-
 placeholder
 
-```{r}
+```{r 0.0 Libraries , echo=FALSE, results=FALSE, message=FALSE, warning=FALSE}
 #*********************************
 ##Libraries
 #********************************* 
@@ -69,7 +67,7 @@ library(kableExtra)
 ```
 
 
-
+placeholder 
 
 
 

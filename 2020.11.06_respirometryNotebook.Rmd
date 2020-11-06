@@ -89,7 +89,7 @@ placeholder
 dRESP <- read.csv(file = "KRILL_Resp_alltrials.csv", stringsAsFactors = FALSE)
 dim(dRESP)
 
-write.csv(dRESP, file = "2020.11.04_presenseSENSORONLY.alltrials.data.csv", row.names = FALSE)
+write.csv(dRESP, file = "2020.11.06_presenseSENSORONLY.alltrials.data.csv", row.names = FALSE)
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 
@@ -97,14 +97,14 @@ write.csv(dRESP, file = "2020.11.04_presenseSENSORONLY.alltrials.data.csv", row.
 dRESPanimal <- read.csv(file = "RespirometryTrials_all.Animal.Info.csv") 
 dim(dRESPanimal)
 
-write.csv(dRESPanimal, file = "2020.11.04_krillanimaldata.csv", row.names = FALSE)
+write.csv(dRESPanimal, file = "2020.11.06_krillanimaldata.csv", row.names = FALSE)
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 
 #dRESPmsr represents the measurements made by the presense optical device for Dissolved Oxygen 
 dRESPmsr <- merge(dRESP, dRESPanimal, by="SensorName")
 
-write.csv(dRESPmsr, file = "2020.11.04_respirometrymeasurements.csv", row.names = FALSE)
+write.csv(dRESPmsr, file = "2020.11.06_respirometrymeasurements.csv", row.names = FALSE)
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 
@@ -126,14 +126,6 @@ placeholder
 ## 3.) Creating dateTime objects  
 #*********************************
 
-# 4.0 establish the date time object of the CSV |
-# dRESPmsr$Date <- as.POSIXct(dRESPmsr$Date, format=("%dd-%mm-%yy))
-# # dRESPmsr$Date <- as.POSIXct(dRESPmsr$Date, format=("%d-%m-%y))
-# # dRESPmsr$Date <- as.POSIXct(dRESPmsr$Date, format=("%d-%m-%y))
-
-#ReferenceTime <- as.POSIXct("2019-09-20 23:59:00")
-class(ReferenceTime)
-
 dRESPmsr$dateTime <- ""
 dRESPmsr$dateTime <- as.POSIXct(paste(dRESPmsr$Date,
                                       dRESPmsr$Time), "%d-%B-%y %H:%M:%S", tz="UTC")
@@ -145,7 +137,6 @@ dRESPmsr$Time <- as.POSIXct(dRESPmsr$dateTime, format="%H:%M:%S")
 
 
 ```
-
 
 
 
@@ -164,12 +155,18 @@ dim(dRESPmsr)
 
 dRESPmsr <- subset(dRESPmsr, Value != "---")
 
+# Confirming proper number of krill 
+# 76, 4x19 propoer number of animals under observation 
+unique(dRESPmsr$SensorName)
+UniqueSensorNames <- levels(dRESPmsr$SensorName)
+write.table(UniqueSensorNames, file = "2020.11.06DRESPmsr_UniqueSensorNames.csv")
+kable(UniqueSensorNames)
 
 ```
 
 placeholder
 ## 4.a) Plot to demonstrate the SensorName
-```{r 4.a) Plot to demonstrate the SensorName }
+```{r 4.a) Plot to demonstrate the SensorName echo=FALSE, results=FALSE, message=FALSE, warning=FALSE}
 #*********************************
 ## 4.a) Plot to demonstrate the SensorName 
 #*********************************
@@ -321,7 +318,6 @@ ggplot(dRESPmsr, aes(x = Time, y = actualDOmg, colour = SensorName)) +
   geom_point(size = 1) +
   geom_smooth(method = "lm") + 
   facet_wrap(~TrialID) +
-  ylim(12)
   #scale_y_continuous(breaks=seq(250,950,by=50))   +
   theme_bw()
 
@@ -337,7 +333,9 @@ placeholder
 #*********************************  
   
 vialVol <- 28.06 #ml
-dRESPmsr$oxygen <- vialVol * dRESPmsr$actualDOmg   
+dRESPmsr$oxygen <- ""
+dRESPmsr <- as.numeric(dRESPmsr$oxygen)
+oxygen <- vialVol * dRESPmsr$actualDOmg   
 #nmol/vial; conversion for L to ml and umol to nmol cancels
 
 #slope funcion of 2 vectors

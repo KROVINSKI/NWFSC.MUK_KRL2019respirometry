@@ -171,11 +171,11 @@ placeholder
 ## 4.a) Plot to demonstrate the SensorName 
 #*********************************
 
-ggplot(dRESPmsr, aes(x = Time, y = Value, colour = SensorName)) +
-  geom_point(size = 1) +
-  geom_smooth(method = "lm") + 
-  #scale_y_continuous(breaks=seq(250,950,by=50))   +
-  theme_bw()
+# ggplot(dRESPmsr, aes(x = Time, y = Value, colour = SensorName)) +
+#   geom_point(size = 1) +
+#   geom_smooth(method = "lm") + 
+#   #scale_y_continuous(breaks=seq(250,950,by=50))   +
+#   theme_bw()
 
 ```
 
@@ -309,17 +309,17 @@ placeholder
 ## 6.a) DO table & DO correction Plot Check  
 #*********************************
 
-write.table(dRESPmsr, file = "2020.11.06.dRESPmeasurements", sep=";", 
-            row.names = TRUE)
-
-dRESPmsr <-subset(dRESPmsr, actualDOmg != "---")
-dRESPmsr$Time <- as.POSIXct(dRESPmsr$Time, format="%H:%M:%S")
-ggplot(dRESPmsr, aes(x = Time, y = actualDOmg, colour = SensorName)) +
-  geom_point(size = 1) +
-  geom_smooth(method = "lm") + 
-  facet_wrap(~TrialID) +
-  #scale_y_continuous(breaks=seq(250,950,by=50))   +
-  theme_bw()
+# write.table(dRESPmsr, file = "2020.11.06.dRESPmeasurements", sep=";", 
+#             row.names = TRUE)
+# 
+# dRESPmsr <-subset(dRESPmsr, actualDOmg != "---")
+# dRESPmsr$Time <- as.POSIXct(dRESPmsr$Time, format="%H:%M:%S")
+# ggplot(dRESPmsr, aes(x = Time, y = actualDOmg, colour = SensorName)) +
+#   geom_point(size = 1) +
+#   geom_smooth(method = "lm") + 
+#   facet_wrap(~TrialID) +
+#   #scale_y_continuous(breaks=seq(250,950,by=50))   +
+#   theme_bw()
 
 ```
 
@@ -331,20 +331,32 @@ placeholder
 #*********************************
 ## 7.) Analysis, Respirometry - Creating the Slope Function  
 #*********************************  
-  
+
 vialVol <- 28.06 #ml
-dRESPmsr$oxygen <- ""
-dRESPmsr <- as.numeric(dRESPmsr$oxygen)
+
 oxygen <- vialVol * dRESPmsr$actualDOmg   
+
+dRESPmsr$oxygen <- oxygen
+
 #nmol/vial; conversion for L to ml and umol to nmol cancels
+
 
 #slope funcion of 2 vectors
 slope <- function(y,x){
   return(lm(y~x, na.action = na.omit)$coefficients[2])
 }
   
+
 dRESPmsr$delta_t <- as.numeric(dRESPmsr$delta_t)
+
 cSlopes <- by(dRESPmsr, dRESPmsr$KrillID, function(x){ slope(x$oxygen, x$delta_t)})
+
+
+#creating a data frame instead of a list 
+ds <- as.data.frame(sapply(cSlopes, I))
+#having row names be a variable in a column to be able to pull it out for later merging 
+ds$TrialID<- row.names(ds)
+
 
 
 ```
@@ -372,7 +384,19 @@ ds$KrillID <- row.names(ds)
 dtotal <- merge(dRESPmsr, ds, by = "KrillID")
 View(dtotal)
 
+unique(dtotal$KrillID)
+UniqueKrillIDs <- levels(dtotal$KrillID)
+write.table(UniqueKrillIDs, file = "2020.11.06dtotal_UniqueKrillIDs.csv")
+kable(UniqueSensorNames)
 
+
+
+```
+
+
+placeholder
+
+```{r}
 # #get slopes and r^2 values from dtotal - just adjusted code from data analysis to fit into these df's
 dtotal$KrillID <- factor(dtotal$KrillID)
 nlevels(dtotal$KrillID)
@@ -383,23 +407,14 @@ nlevels(dtotal$KrillID)
 comparedf(ds, dtotal)
 summary(comparedf(ds, dtotal))
 
-
-
 dtotal[is.na(dtotal$delta_t),]
 unique(dtotal$KrillID)
 
-
-
-
-
-
-
-#how best to run the lmlist over 
-# group and then run a function tidyverse 
-# group by krill ID and then run the function 
+#how best to run the lmlist over
+# group and then run a function tidyverse
+# group by krill ID and then run the function
 
 info <- lmList(oxygen ~ delta_t|KrillID, dtotal,na.action=na.omit)
-
 
 dtotalGRP <- dtotal %>% group_by(KrillID)
 
@@ -413,16 +428,14 @@ lm(oxygen ~ delta_t, data= dtotal[dtotal$KrillID=="Trial04_KRLr4_68",])
 lm(oxygen ~ delta_t, data= dtotal[dtotal$KrillID=="Trial04_KRLr4_69",])
 
 
-
-
 dtotal[is.na(dtotal$delta_t),]
 unique(dtotal$KrillID)
-            
+
 names(info)
 
 view(dtotal[!dtotal$KrillID %in% names(info), ])
 
-   
+
 print(info)
 
 # slopes <- coef(info)[2]
@@ -435,7 +448,6 @@ print(info)
 # dslopes$delta_t <- NULL
 # #View(dslopes)
 
-
 #now for R^2!!
 Rsq <- sapply(info,function(x) summary(x)$r.squared)
 t(Rsq) #transposes rows and columns
@@ -445,16 +457,7 @@ dtotal <- cbind(ds, Rsq)
 View(dtotal)
 
 
-
-
-
-
-
-
 ```
-
-
-placeholder
 
 
 

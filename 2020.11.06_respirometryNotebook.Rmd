@@ -367,7 +367,7 @@ placeholder
 # 8.) Creating the ds dataframe
 ```{r 8.) Creating the ds dataframe}
 #*********************************
-## 11.) Creating the ds dataframe
+## 8.) Creating the ds dataframe
 #*********************************
 
 #creating a data frame instead of a list 
@@ -395,17 +395,14 @@ kable(UniqueSensorNames)
 
 
 placeholder
-
-```{r}
+# 9.) Creating Slope Functions & Linear Models 
+```{r 9.) Creating Slope Functions & Linear Models }
+#*********************************
+## 9.) Creating the ds dataframe
+#*********************************
 # #get slopes and r^2 values from dtotal - just adjusted code from data analysis to fit into these df's
 dtotal$KrillID <- factor(dtotal$KrillID)
 nlevels(dtotal$KrillID)
-
-## why do we have a different number of observations
-## using the comparedf function from the arsenal package
-
-comparedf(ds, dtotal)
-summary(comparedf(ds, dtotal))
 
 dtotal[is.na(dtotal$delta_t),]
 unique(dtotal$KrillID)
@@ -414,13 +411,27 @@ unique(dtotal$KrillID)
 # group and then run a function tidyverse
 # group by krill ID and then run the function
 
+levels(dtotal$KrillID)
+GRP_dtotal <- dtotal %>% group_by(KrillID)
+
 info <- lmList(oxygen ~ delta_t|KrillID, dtotal,na.action=na.omit)
+view(dtotal[!dtotal$KrillID %in% names(info), ])
 
-dtotalGRP <- dtotal %>% group_by(KrillID)
+MissingINFOobservations <- (dtotal[!dtotal$KrillID %in% names(info), ])
+dtotalVSmissinfo <- summary(comparedf(dtotal, MissingINFOobservations))
 
-info <- lmList(oxygen ~ delta_t|KrillID, dtotal,na.action=na.omit)
+view(dtotalVSmissinfo)
+
+```
 
 
+
+
+placeholder
+
+
+
+```{r}
 summary(lm(oxygen ~ delta_t, data= dtotal[dtotal$KrillID=="Trial04_KRLr4_59",]))$r.squared
 
 lm(oxygen ~ delta_t, data= dtotal[dtotal$KrillID=="Trial04_KRLr4_68",])
@@ -456,16 +467,7 @@ Rsq <- data.matrix(Rsq)
 dtotal <- cbind(ds, Rsq)
 View(dtotal)
 
-
 ```
-
-
-
-
-placeholder
-
-
-
 
 
 

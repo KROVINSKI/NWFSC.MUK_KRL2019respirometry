@@ -239,6 +239,8 @@ vialVol <- 28.06 #ml
 dtotal$oxygen <- vialVol * dtotal$Value   #nmol/vial; conversion for L to ml and umol to nmol cancels
 View(dtotal)
 
+uq
+
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 

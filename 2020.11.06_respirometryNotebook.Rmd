@@ -415,12 +415,12 @@ levels(dtotal$KrillID)
 GRP_dtotal <- dtotal %>% group_by(KrillID)
 
 info <- lmList(oxygen ~ delta_t|KrillID, dtotal,na.action=na.omit)
-view(dtotal[!dtotal$KrillID %in% names(info), ])
+#view(dtotal[!dtotal$KrillID %in% names(info), ])
 
 MissingINFOobservations <- (dtotal[!dtotal$KrillID %in% names(info), ])
 dtotalVSmissinfo <- summary(comparedf(dtotal, MissingINFOobservations))
 
-view(dtotalVSmissinfo)
+kable(MissingINFOobservations)
 
 ```
 

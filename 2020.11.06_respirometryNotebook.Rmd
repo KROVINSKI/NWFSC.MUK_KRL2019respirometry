@@ -414,6 +414,11 @@ unique(dtotal$KrillID)
 levels(dtotal$KrillID)
 GRP_dtotal <- dtotal %>% group_by(KrillID)
 
+```
+
+
+##### 9.a Missing Slope Value
+```{r 9.a Missing Slope Values}
 info <- lmList(oxygen ~ delta_t|KrillID, dtotal,na.action=na.omit)
 #view(dtotal[!dtotal$KrillID %in% names(info), ])
 
@@ -421,9 +426,22 @@ MissingINFOobservations <- (dtotal[!dtotal$KrillID %in% names(info), ])
 dtotalVSmissinfo <- summary(comparedf(dtotal, MissingINFOobservations))
 
 kable(MissingINFOobservations)
-
 ```
 
+
+
+##### 9.b Included Slope Value
+```{r 9.a IncludedSlope Values}
+
+IncludedINFOobservations <- (dtotal[dtotal$KrillID %in% names(info), ])
+unique(IncludedINFOobservations$KrillID)
+Incld_UniqueKrillIDs <- levels(IncludedINFOobservations$KrillID)
+write.table(Incld_UniqueKrillIDs, file = "2020.11.09IncludedINFOobservationsKrillID.csv")
+
+comparedf(Incld_UniqueKrillIDs, MissingINFOobservations)
+summary.comparedf(Incld_UniqueKrillIDs, MissingINFOobservations)
+kable(Incld_UniqueKrillIDs)
+```
 
 
 

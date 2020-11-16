@@ -22,7 +22,6 @@ Title: Respirometry Trails for Summer Krill 2019
 Date: November 2020
 
 
-placeholder
 
 ```{r 0.1 Version Check , echo=FALSE, results=FALSE, message=FALSE, warning=FALSE}
 #*********************************
@@ -32,7 +31,7 @@ R.version
 
 ```
 
-placeholder
+
 
 ```{r 0.0 Libraries , echo=FALSE, results=FALSE, message=FALSE, warning=FALSE}
 #*********************************
@@ -64,9 +63,9 @@ library(kableExtra)
 ```
 
 
-placeholder 
+ 
 # 1.) Setting Working Directory
-```{r 1.) Setting Working Directory, echo=FALSE, results=FALSE, message=FALSE, warning=FALSE}
+```{r 1.) Setting Working Directory }
 #*********************************
 ## 1.) Setting Working Directory
 #*********************************
@@ -77,9 +76,8 @@ setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_KRL2019respirometry")
 
 
 
-placeholder
 # 2.) Creating the Dataframe
-```{r 2.) Creating the Dataframe, dRESP, echo=FALSE, results=FALSE, message=FALSE, warning=FALSE}
+```{r 2.) Creating the Dataframe }
 
 #*********************************
 ## 2.) Creating the intial Dataframe, dRESP
@@ -119,7 +117,6 @@ write.csv(dRESPmsr, file = "2020.11.06_respirometrymeasurements.csv", row.names 
 
 
 
-placeholder
 # 3.) Creating dateTime objects 
 ```{r 3.) Creating dateTime objects }
 
@@ -165,25 +162,7 @@ kable(UniqueSensorNames)
 
 ```
 
-placeholder
-## 4.a) Plot to demonstrate the SensorName
-```{r 4.a) Plot to demonstrate the SensorName echo=FALSE, results=FALSE, message=FALSE, warning=FALSE}
-#*********************************
-## 4.a) Plot to demonstrate the SensorName 
-#*********************************
 
-# ggplot(dRESPmsr, aes(x = Time, y = Value, colour = SensorName)) +
-#   geom_point(size = 1) +
-#   geom_smooth(method = "lm") + 
-#   #scale_y_continuous(breaks=seq(250,950,by=50))   +
-#   theme_bw()
-
-```
-
-placeholder
-
-
-placeholder
 
 #5.) Creating Trial ID & Krill ID
 ```{r 5.) Creating Trial ID & Krill ID}
@@ -254,7 +233,6 @@ dRESPmsr$KrillID <- paste(dRESPmsr$TrialID, "_", dRESPmsr$SensorName, sep="")
 ```
 
 
-placeholder
 
 # 6.) DO Corrections
 ```{r 6.) DO trial 3 correction applied to all rounds}
@@ -303,7 +281,8 @@ dRESPmsr$actualDOmg <- dRESPmsr$percentDO * dRESPmsr$obseveredSatDOmg
 ```
 
 
-placeholder
+
+
 # 6.a) DO table & DO correction Plot Check
 ```{r 6.a) DO table & DO correction Plot Check  }
 #*********************************
@@ -326,7 +305,7 @@ placeholder
 
 
 
-placeholder
+
 # 7.) Analysis, Respirometry - Creating the Slope Function 
 ```{r 7.) Analysis, Respirometry - Creating the Slope Function}
 #*********************************
@@ -364,7 +343,7 @@ ds$TrialID<- row.names(ds)
 
 
 
-placeholder
+
 # 8.) Creating the ds dataframe
 ```{r 8.) Creating the ds dataframe}
 #*********************************
@@ -395,7 +374,7 @@ kable(UniqueSensorNames)
 ```
 
 
-placeholder
+
 # 9.) Creating Slope Functions & Linear Models 
 ```{r 9.) Creating Slope Functions & Linear Models }
 #*********************************
@@ -417,6 +396,7 @@ GRP_dtotal <- dtotal %>% group_by(KrillID)
 dtotal <- GRP_dtotal
 
 ```
+
 
 
 ##### 9.a Missing Slope Value
@@ -477,6 +457,7 @@ comparedf(dRESP_58, dRESP_59, by = "delta_t")
 
 
 ```
+
 
 
 ## 9.d Comparing the slopes of 58 and 59 

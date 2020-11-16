@@ -47,6 +47,7 @@ library(purrr)
 library(wql)
 library(lubridate)
 library(arsenal)
+library(compareDF)
 #for graphing
 library(ggplot2)
 library(stringr)
@@ -430,18 +431,29 @@ kable(MissingINFOobservations)
 
 
 
-##### 9.b Included Slope Value
+##### 9.b Exploring 3 Missing Observations
 ```{r 9.a IncludedSlope Values}
 
-IncludedINFOobservations <- (dtotal[dtotal$KrillID %in% names(info), ])
-unique(IncludedINFOobservations$KrillID)
-Incld_UniqueKrillIDs <- levels(IncludedINFOobservations$KrillID)
-write.table(Incld_UniqueKrillIDs, file = "2020.11.09IncludedINFOobservationsKrillID.csv")
+write.csv(MissingINFOobservations, file = "2020.11.16_MissingINFOobservations.csv", row.names = FALSE)
 
-comparedf(Incld_UniqueKrillIDs, MissingINFOobservations)
-summary.comparedf(Incld_UniqueKrillIDs, MissingINFOobservations)
-kable(Incld_UniqueKrillIDs)
+#Summary function commented out due to errors below
+
+summary(comparedf(dtotal, MissingINFOobservations, by = "delta_t"))
+#Resulting Faults
+#...Non-identical attributes
+#...No non-identical attributes
+
+
+# summary.comparedf(dtotal, MissingINFOobservations, by = delta_t)
+
+#kable(Incld_UniqueKrillIDs)
+
 ```
+
+
+## 9.C Comparison between Krillr4_58 and 59 to better determine differences
+Using neighboring
+
 
 
 
@@ -506,16 +518,8 @@ View(dtotal)
 
 
 
-
-
-
-```{r}
-plot(cars)
-```
-
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
-
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
-
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+#**************E*N*D*************# 
+#*********************************
+## END OF SCRIPT | END OF DOCUMENT 
+#*********************************
 

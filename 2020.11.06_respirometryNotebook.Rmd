@@ -414,6 +414,7 @@ unique(dtotal$KrillID)
 
 levels(dtotal$KrillID)
 GRP_dtotal <- dtotal %>% group_by(KrillID)
+dtotal <- GRP_dtotal
 
 ```
 
@@ -452,12 +453,48 @@ summary(comparedf(dtotal, MissingINFOobservations, by = "delta_t"))
 
 
 ## 9.C Comparison between Krillr4_58 and 59 to better determine differences
-Using neighboring
+Using neighboring observations to determine if any difference
+```{r 9.C Comparison between Krillr4_58 and 59 to better determine differences}
+
+dRESP_58 <- read.csv(file = "2020.11.16_REPRwork_KRLr4_58comparison.csv", stringsAsFactors = FALSE)
+dRESP_59 <- read.csv(file = "2020.11.16_REPRwork_KRLr4_59comparison.csv", stringsAsFactors = FALSE)
+
+comparedf(dRESP_58, dRESP_59)
+
+# Compare Object
+# 
+# Function Call: 
+# comparedf(x = dRESP_58, y = dRESP_59)
+# 
+# Shared: 52 non-by variables and 41 observations.
+# Not shared: 0 variables and 9 observations.
+# 
+# Differences found in 10/52 variables compared.
+# 0 variables compared have non-identical attributes.
 
 
+comparedf(dRESP_58, dRESP_59, by = "delta_t")
 
 
-placeholder
+```
+
+
+## 9.d Comparing the slopes of 58 and 59 
+```{r 9.d Comparing the slopes of 58 and 5}
+
+GRP_dtotal 
+write.csv(GRP_dtotal, file = "2020.11.16_GRP_dtotalObservations.csv", row.names = FALSE)
+
+
+GRP_dtotal_58 <- read.csv(file = "2020.11.16_GRP_dtotalObservationsKRL4_58.csv", stringsAsFactors = FALSE)
+GRP_dtotal_59 <- read.csv(file = "2020.11.16_GRP_dtotalObservationsKRL4_59.csv", stringsAsFactors = FALSE)
+
+
+comparedf(dRESP_58, dRESP_59, by = "oxygen")
+
+```
+
+
 
 
 

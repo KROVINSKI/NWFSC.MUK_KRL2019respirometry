@@ -112,6 +112,10 @@ write.csv(dRESPmsr, file = "2020.11.06_respirometrymeasurements.csv", row.names 
 # levels(dRESP$MOATS)
 
 
+dRESPmsr <- dRESPmsr %>% filter(!MOATS %in% c("3", "4", "5", "11")) %>%
+  filter(Treatment %in% c("CUR", "CHG", "TMP")) 
+
+
 ```
 
 
@@ -304,9 +308,92 @@ ggplot(dRESPmsr, aes(x = Time, y = actualDOmg, colour = SensorName)) +
 ```
 
 
+# 7.) Plotting Percent DO by Trial (80%)
+## 7.1) PLotting Percent DO filtering Trial 1
+```{r 7.1) PLotting Percent DO filtering Trial 1}
+
+Trial1percentDO <- filter(dRESPmsr, TrialID == "Trial01")
 
 
-# 7.) Analysis, Respirometry - Creating the Slope Function 
+ggplot(Trial1percentDO, aes(x = Time, y = percentDO, colour = SensorName)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial01 Percent DO") +
+  facet_wrap(~ Treatment) + 
+  geom_hline(yintercept = c(.8), colour = "red") +
+  theme_bw()
+
+
+```
+
+
+## 7.2) PLotting Percent DO filtering Trial 2
+```{r 7.2) PLotting Percent DO filtering Trial 2}
+
+Trial2percentDO <- filter(dRESPmsr, TrialID == "Trial02")
+
+
+ggplot(Trial2percentDO, aes(x = Time, y = percentDO, colour = SensorName)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial02 Percent DO") +
+  facet_wrap(~ Treatment) + 
+   geom_hline(yintercept = c(.8), colour = "red") +
+  theme_bw()
+
+
+```
+
+
+## 7.3) PLotting Percent DO filtering Trial 3
+```{r 7.3) PLotting Percent DO filtering Trial 3}
+
+Trial3percentDO <- filter(dRESPmsr, TrialID == "Trial03")
+
+
+ggplot(Trial3percentDO, aes(x = Time, y = percentDO, colour = SensorName)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial03 Percent DO") +
+  facet_wrap(~ Treatment) + 
+   geom_hline(yintercept = c(.8), colour = "red") +
+  theme_bw()
+
+
+```
+
+
+## 7.4) PLotting Percent DO filtering Trial 4
+```{r 7.4) PLotting Percent DO filtering Trial 4}
+
+Trial4percentDO <- filter(dRESPmsr, TrialID == "Trial04")
+
+
+ggplot(Trial4percentDO, aes(x = Time, y = percentDO, colour = SensorName)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm") +
+  #scale_y_continuous(breaks=seq(250,950,by=50))   +
+  ggtitle("Trial04 Percent DO") +
+  facet_wrap(~ Treatment) + 
+   geom_hline(yintercept = c(.8), colour = "red") +
+  theme_bw()
+
+
+```
+
+Notes to Self
+apply the blanks within trial
+don't comare blanks across trials
+exhibit the blanks are showing a reduction in oxygen
+any time that there is "evidence" of oxygen production place to zero
+Need to determine background bacteria breathing our water investigation 
+
+
+
+# 8.) Analysis, Respirometry - Creating the Slope Function 
 ```{r 7.) Analysis, Respirometry - Creating the Slope Function}
 #*********************************
 ## 7.) Analysis, Respirometry - Creating the Slope Function  
@@ -344,10 +431,10 @@ ds$TrialID<- row.names(ds)
 
 
 
-# 8.) Creating the ds dataframe
-```{r 8.) Creating the ds dataframe}
+# 9.) Creating the ds dataframe
+```{r 9.) Creating the ds dataframe}
 #*********************************
-## 8.) Creating the ds dataframe
+## 9.) Creating the ds dataframe
 #*********************************
 
 #creating a data frame instead of a list 
@@ -375,10 +462,10 @@ write.table(UniqueKrillIDs, file = "2020.11.06dtotal_UniqueKrillIDs.csv")
 
 
 
-# 9.) Creating Slope Functions & Linear Models 
-```{r 9.) Creating Slope Functions & Linear Models }
+# 10.) Creating Slope Functions & Linear Models 
+```{r 10.) Creating Slope Functions & Linear Models }
 #*********************************
-## 9.) Creating the ds dataframe
+## 10.) Creating the ds dataframe
 #*********************************
 # #get slopes and r^2 values from dtotal - just adjusted code from data analysis to fit into these df's
 dtotal$KrillID <- factor(dtotal$KrillID)
@@ -403,8 +490,8 @@ info <- lmList(oxygen ~ delta_t|KrillID, dtotal,na.action=na.omit)
 
 
 
-##### 9.a Missing Slope Value
-```{r 9.a Missing Slope Values}
+##### 10.a Missing Slope Value
+```{r 10.a Missing Slope Values}
 
 
 MissingINFOobservations <- (dtotal[!dtotal$KrillID %in% names(info), ])
@@ -415,8 +502,8 @@ kable(MissingINFOobservations)
 
 
 
-##### 9.b Exploring 3 Missing Observations
-```{r 9.a IncludedSlope Values}
+##### 10.b Exploring 3 Missing Observations
+```{r 10.a IncludedSlope Values}
 
 write.csv(MissingINFOobservations, file = "2020.11.16_MissingINFOobservations.csv", row.names = FALSE)
 
@@ -435,9 +522,9 @@ summary(comparedf(dtotal, MissingINFOobservations, by = "delta_t"))
 ```
 
 
-## 9.C Comparison between Krillr4_58 and 59 to better determine differences
+## 10.x Comparison between Krillr4_58 and 59 to better determine differences
 Using neighboring observations to determine if any difference
-```{r 9.C Comparison between Krillr4_58 and 59 to better determine differences}
+```{r 10.x Comparison between Krillr4_58 and 59 to better determine differences}
 
 dRESP_58 <- read.csv(file = "2020.11.16_REPRwork_KRLr4_58comparison.csv", stringsAsFactors = FALSE)
 dRESP_59 <- read.csv(file = "2020.11.16_REPRwork_KRLr4_59comparison.csv", stringsAsFactors = FALSE)
@@ -463,8 +550,8 @@ comparedf(dRESP_58, dRESP_59, by = "delta_t")
 
 
 
-## 9.d Comparing the slopes of 58 and 59 
-```{r 9.d Comparing the slopes of 58 and 59}
+## 10.xx Comparing the slopes of 58 and 59 
+```{r 10.xx Comparing the slopes of 58 and 59}
 
 GRP_dtotal 
 write.csv(GRP_dtotal, file = "2020.11.16_GRP_dtotalObservations.csv", row.names = FALSE)
@@ -501,66 +588,66 @@ Krill58plot2
 
 ```
 
-# 9.x T/S the linear model list function
-```{r 9.x T/S the linear model list function }
+# 10.xxx T/S the linear model list function
+```{r 10.xxx T/S the linear model list function }
 
-levels(dtotal$KrillID)
-
-##### Krill 58
-lm58 <- lm(oxygen ~ delta_t, GRP_dtotal_58, na.action=na.omit)
-info58 <- lmList(oxygen ~ delta_t|KrillID, GRP_dtotal_58, na.action=na.omit)
-GRP_dtotal_58$KrillID <- factor(GRP_dtotal_58$KrillID)
-levels(GRP_dtotal_58$KrillID)
-
-
-lm58f <- lm(oxygen ~ delta_t, dtotal_58_filter, na.action=na.omit)
-info58f <- lmList(oxygen ~ delta_t|KrillID, dtotal_58_filter, na.action=na.omit)
-
-
-info58 <- lmList(oxygen ~ delta_t|KrillID, GRP_dtotal_58, na.action=na.omit)
-GRP_dtotal_58$KrillID <- factor(GRP_dtotal_58$KrillID)
-levels(GRP_dtotal_58$KrillID)
-
-
-### Krill 59
-
-#using the filtered dtotal database rather than kate's copy and paste file
-lm59f <- lm(oxygen ~ delta_t, dtotal_59_filter, na.action=na.omit)
-info59f <- lmList(oxygen ~ delta_t|KrillID, dtotal_59_filter, na.action=na.omit)
-levels(dtotal_59_filter$KrillID)
-
-
-# working off of kate's copy paste file
-lm59 <- lm(oxygen ~ delta_t, GRP_dtotal_59, na.action=na.omit)
-info59 <- lmList(oxygen ~ delta_t|KrillID, GRP_dtotal_59, na.action=na.omit)
-
-
-#GRP_dtotal_59 <- subset(GRP_dtotal_59, KrillID != "")
-GRP_dtotal_59a <- filter(GRP_dtotal_59, KrillID = "")
-
-
-GRP_dtotal_59$KrillID <- factor(GRP_dtotal_59$KrillID)
-levels(GRP_dtotal_59$KrillID)
-
-
-
-### hunting for missing values
-dtotal59fmissingOXY <- filter(dtotal_59_filter, is.na(oxygen))
-dotal59fmissingDELT <- filter(dtotal_59_filter, is.na(delta_t))
-# no missing values found 
+# levels(dtotal$KrillID)
+# 
+# ##### Krill 58
+# lm58 <- lm(oxygen ~ delta_t, GRP_dtotal_58, na.action=na.omit)
+# info58 <- lmList(oxygen ~ delta_t|KrillID, GRP_dtotal_58, na.action=na.omit)
+# GRP_dtotal_58$KrillID <- factor(GRP_dtotal_58$KrillID)
+# levels(GRP_dtotal_58$KrillID)
+# 
+# 
+# lm58f <- lm(oxygen ~ delta_t, dtotal_58_filter, na.action=na.omit)
+# info58f <- lmList(oxygen ~ delta_t|KrillID, dtotal_58_filter, na.action=na.omit)
+# 
+# 
+# info58 <- lmList(oxygen ~ delta_t|KrillID, GRP_dtotal_58, na.action=na.omit)
+# GRP_dtotal_58$KrillID <- factor(GRP_dtotal_58$KrillID)
+# levels(GRP_dtotal_58$KrillID)
+# 
+# 
+# ### Krill 59
+# 
+# #using the filtered dtotal database rather than kate's copy and paste file
+# lm59f <- lm(oxygen ~ delta_t, dtotal_59_filter, na.action=na.omit)
+# info59f <- lmList(oxygen ~ delta_t|KrillID, dtotal_59_filter, na.action=na.omit)
+# levels(dtotal_59_filter$KrillID)
+# 
+# 
+# # working off of kate's copy paste file
+# lm59 <- lm(oxygen ~ delta_t, GRP_dtotal_59, na.action=na.omit)
+# info59 <- lmList(oxygen ~ delta_t|KrillID, GRP_dtotal_59, na.action=na.omit)
+# 
+# 
+# #GRP_dtotal_59 <- subset(GRP_dtotal_59, KrillID != "")
+# GRP_dtotal_59a <- filter(GRP_dtotal_59, KrillID = "")
+# 
+# 
+# GRP_dtotal_59$KrillID <- factor(GRP_dtotal_59$KrillID)
+# levels(GRP_dtotal_59$KrillID)
+# 
+# 
+# 
+# ### hunting for missing values
+# dtotal59fmissingOXY <- filter(dtotal_59_filter, is.na(oxygen))
+# dotal59fmissingDELT <- filter(dtotal_59_filter, is.na(delta_t))
+# # no missing values found 
 
 write.csv(dtotal, file = "2020.11.16_dtotal_TSlinearmodel.csv", row.names = FALSE)
 
 
 ```
 
-## 9.e Creating a small box plot for Krill 59
-```{r 9.e Creating a small box plot for Krill 59}
+## 10.xxxx Creating a small box plot for Krill 59
+```{r 10.xxxxx Creating a small box plot for Krill 59}
 
 Krill59plot <- ggplot(GRP_dtotal_59, aes(delta_t, oxygen)) +
                 geom_boxplot(notch = TRUE, outlier.shape = NA, colour = "green") +
                 geom_point(data = GRP_dtotal_59, aes(x=delta_t, y=oxygen), size=5, color = "purple") + 
-                ggtitle("Boxplot for Krill 58 observations") +
+                ggtitle("Boxplot for Krill 59 observations") +
             theme_bw() 
 
 Krill59plot
@@ -568,8 +655,8 @@ Krill59plot
 ```
 
 
-## 9.f Creating a small box plot for Krill 68
-```{r 9.f Creating a small box plot for Krill 68}
+## 10.xxxxxxx Creating a small box plot for Krill 68
+```{r 10.xxxxxxx Creating a small box plot for Krill 68}
 
 Krill68plot <- ggplot(GRP_dtotal_68, aes(delta_t, oxygen)) +
                 geom_boxplot(notch = TRUE, outlier.shape = NA, colour = "green") +
@@ -583,8 +670,8 @@ Krill68plot
 
 
 
-## 9.g Creating a small box plot for Krill 69
-```{r 9.g Creating a small box plot for Krill 69}
+## 10.xxxxxxx Creating a small box plot for Krill 69
+```{r 10.xxxxxx Creating a small box plot for Krill 69}
 
 Krill69plot <- ggplot(GRP_dtotal_69, aes(delta_t, oxygen)) +
                 geom_boxplot(notch = TRUE, outlier.shape = NA, colour = "green") +
@@ -597,7 +684,7 @@ Krill69plot
 ```
 
 
-#10.) Creating the linear Model on the Slope (Sapply) 
+#11.) Creating the linear Model on the Slope (Sapply) 
 ```{r 10.) Creating the linear Model on the Slope (Sapply) }
 
 info <- lmList(oxygen ~ delta_t|KrillID, dtotal,na.action=na.omit)
@@ -607,25 +694,25 @@ info <- lmList(oxygen ~ delta_t|KrillID, dtotal,na.action=na.omit)
 ```
 
 
-##10.a) Trouble Shooting the Linear Model Problems
+##12.) Trouble Shooting the Linear Model Problems
 ```{r}
 
-summary(lm(oxygen ~ delta_t, data= dtotal[dtotal$KrillID=="Trial04_KRLr4_59",]))$r.squared
-
-lm(oxygen ~ delta_t, data= dtotal[dtotal$KrillID=="Trial04_KRLr4_68",])
-
-lm(oxygen ~ delta_t, data= dtotal[dtotal$KrillID=="Trial04_KRLr4_69",])
-
-
-dtotal[is.na(dtotal$delta_t),]
-unique(dtotal$KrillID)
-
-names(info)
-
-view(dtotal[!dtotal$KrillID %in% names(info), ])
-
-
-print(info)
+# summary(lm(oxygen ~ delta_t, data= dtotal[dtotal$KrillID=="Trial04_KRLr4_59",]))$r.squared
+# 
+# lm(oxygen ~ delta_t, data= dtotal[dtotal$KrillID=="Trial04_KRLr4_68",])
+# 
+# lm(oxygen ~ delta_t, data= dtotal[dtotal$KrillID=="Trial04_KRLr4_69",])
+# 
+# 
+# dtotal[is.na(dtotal$delta_t),]
+# unique(dtotal$KrillID)
+# 
+# names(info)
+# 
+# view(dtotal[!dtotal$KrillID %in% names(info), ])
+# 
+# 
+# print(info)
 # 
 # # slopes <- coef(info)[2]
 # # #print(slopes)
